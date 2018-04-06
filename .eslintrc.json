@@ -1,0 +1,31 @@
+{
+    "env": {
+        "browser": false,
+        "es6": true,
+        "node": true
+    },
+
+    "extends": "eslint:recommended",
+
+    "parserOptions": {
+        "sourceType": "module",
+        "ecmaVersion": 8,
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+    "globals": {
+        "mainDir": false,
+        "logger" : false,
+        "got": false,
+        "config": false,
+        "utils": false
+    },
+    "rules": {
+        "no-console": 0,
+        "global-require":"off",
+        
+        "semi": "off",
+        "no-unused-vars": "warn"
+    }
+}

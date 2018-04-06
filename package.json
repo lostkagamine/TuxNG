@@ -1,0 +1,23 @@
+{
+  "name": "erio",
+  "version": "1.0.0",
+  "description": "A discord bot in JS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ry00001/Erio.git"
+  },
+  "author": "ry00001 and Erio Devteam",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ry00001/Erio/issues"
+  },
+  "dependencies": {
+    "eris": ">=0.8.5",
+    "eslint": "^4.19.1"
+  },
+  "homepage": "https://github.com/ry00001/Erio#readme"
+}
