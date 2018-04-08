@@ -15,8 +15,8 @@ bot.on('ready', () => {
     }
 })
 
-bot.cmdEvent('commandError', async (ctx, name, err) => {
-    await ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${name})`)
+bot.cmdEvent('commandError', async (ctx, err) => {
+    await ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${ctx.command.name})`)
 })
 
 bot.connect();

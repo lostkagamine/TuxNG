@@ -32,7 +32,6 @@ class Nxtbot extends Eris.Client {
         })
 
         this.on('messageCreate', m => {
-            let ctx = new Context(this, m)
             let prefix = undefined;
             this.prefixes.forEach(i => {if (m.content.startsWith(i)) { prefix = i }})
             if (prefix === undefined) {
@@ -42,29 +41,43 @@ class Nxtbot extends Eris.Client {
             let text = m.content.slice(prefix.length).split(' ')
             let cmdName = text.shift()
             let cmd = this.findCommand(cmdName)
-            console.log(cmd)
+            let ctx = new Context(this, m, cmd)
             if (cmd === undefined) {
                 // invalid command; drop it again - but fire an event
-                this.cmdDispatch('commandInvalid', [ctx, cmdName])
+                this.cmdDispatch('commandInvalid', [ctx])
                 return;
             }
             if (cmd.ownerOnly && ctx.author.id != this.owners) {
-                this.cmdDispatch('commandNotOwner', [ctx, cmdName])
+                this.cmdDispatch('commandNotOwner', [ctx])
                 return;
+            }
+            if (ctx.isDM && !cmd.canBeDM) {
+                this.cmdDispatch('commandNoDM', [ctx])
+                return
+            }
+            if (!ctx.isDM) {
+                if (!cmd.botAble(ctx.me)) {
+                    this.cmdDispatch('commandBotNoPermissions', [ctx])
+                    return;
+                }
+                if (!cmd.able(ctx.member)) {
+                    this.cmdDispatch('commandNoPermissions', [ctx])
+                    return;
+                }
             }
             // fire the command!
             try {
                 cmd.code(ctx, text).catch(e => {
-                    this.cmdDispatch('commandError', [ctx, cmdName, e])
+                    this.cmdDispatch('commandError', [ctx, e])
                 })
             } catch(e) { // failsafe in case it's not async
-                this.cmdDispatch('commandError', [ctx, cmdName, e])
+                this.cmdDispatch('commandError', [ctx, e])
             }
         })
     }
 
     loadCommand(cmdObj) {
-        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.ownerOnly, cmdObj.aliases)
+        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.botPerms, cmdObj.ownerOnly, cmdObj.dmable, cmdObj.aliases)
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
@@ -104,23 +117,51 @@ class Nxtbot extends Eris.Client {
 }
 
 class Command {
-    constructor(name, code, desc, perms, owner, aliases = []) {
+    constructor(name, code, desc, perms = [], botPerms = [], owner = false, dmable = false, aliases = []) {
         this.name = name
         this.code = code
         this.description = desc
         this.perms = perms
+        this.botPerms = botPerms
         this.ownerOnly = owner
         this.aliases = aliases
+        this.canBeDM = dmable
+    }
+
+    able(member) {
+        if (member.guild.ownerID == member.id) {
+            return true; // since permission.has doesn't take in account guild ownership...
+        }
+        if (member.permission.has('administrator')) {
+            return true;
+        }
+        return this.botPerms.every(i => member.permission.has(i));
+    }
+
+    botAble(me) {
+        if (me.guild.ownerID == me.id) {
+            return true; // since permission.has doesn't take in account guild ownership...
+        }
+        if (me.permission.has('administrator')) {
+            return true;
+        }
+        return this.botPerms.every(i => me.permission.has(i));
     }
 }
 
 class Context {
-    constructor(bot, msg) {
+    constructor(bot, msg, cmd) {
         this.author = msg.author
         this.channel = msg.channel 
         this.message = msg
-        if (msg.channel.guild)  { this.me = msg.channel.guild.members.get(bot.user.id); this.inDM = false }
-        else { this.inDM = true }
+        this.command = cmd
+        if (msg.channel.guild) {
+            this.me = msg.channel.guild.members.get(bot.user.id);
+            this.member = msg.member
+            this.isDM = false
+        } else {
+            this.isDM = true
+        }
         this.bot = bot
     }
 
