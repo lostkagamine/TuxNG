@@ -18,13 +18,13 @@ class Nxtbot extends Eris.Client {
         this.on('ready', () => {
             // Housekeeping
             if (!this.cmdOptions.noMentionPrefix) {
-                this.prefixes.push([`<@${this.user.id}>`, `<@!${this.user.id}>`])
+                this.prefixes.push([`<@${this.user.id}> `, `<@!${this.user.id}> `])
             }
             if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
                 console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
             }
 
-            this.loadDir(this.cmdOptions.commandsDir ? this.cmdOptions.commandsDir : './commands/')
+            if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.commandsDir ? this.cmdOptions.commandsDir : './commands/')
         })
 
         this.on('messageCreate', m => {
@@ -44,13 +44,17 @@ class Nxtbot extends Eris.Client {
                 return;
             }
             // fire the command!
-            cmd.invoke(ctx, text)
+            try {
+                cmd.invoke(ctx, text)
+            } catch (e) {
+                this.cmdDispatch('commandError', [ctx, cmdName, e])
+            }
         })
     }
 
     loadCommand(cmdObj) {
         let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms)
-        this.commands.push(cmd);
+        if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
     findCommand(name) {
@@ -72,7 +76,7 @@ class Nxtbot extends Eris.Client {
 
     cmdDispatch(name, args) {
         if (!this.cevents[name]) return;
-        this.cevents[name].forEach(i => i(args))
+        this.cevents[name].forEach(i => i(...args))
     }
 
     loadDir(commandsDir = './commands/') {
@@ -83,6 +87,8 @@ class Nxtbot extends Eris.Client {
                 this.loadCommand(c)
             })
         })
+        let cmdNames = this.commands.map(i => i.name)
+        this.commands = this.commands.filter((v, i, a) => !cmdNames.indexOf(v.name) === i.name)
     }
 }
 

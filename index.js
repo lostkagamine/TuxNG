@@ -13,7 +13,10 @@ bot.on('ready', () => {
         console.log('nxtbot can only be ran under bot accounts. Exiting...')
         process.exit(1);
     }
-    bot.loadDir();
+})
+
+bot.cmdEvent('commandError', (ctx, name, err) => {
+    ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${name})`)
 })
 
 bot.connect();
