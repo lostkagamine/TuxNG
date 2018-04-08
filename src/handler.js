@@ -8,17 +8,21 @@ const fs = require('fs');
 const path = require('path')
 
 class Nxtbot extends Eris.Client {
-    constructor(token, prefixes = [], cmdOptions = {}) {
+    constructor(token, prefixes = [], cmdOptions = {}, owners = []) {
         super(token);
         this.commands = [];
         this.cevents = {};
         this.prefixes = prefixes;
-        this.cmdOptions = cmdOptions
+        this.cmdOptions = cmdOptions;
+        this.owners = owners;
 
         this.on('ready', () => {
             // Housekeeping
             if (!this.cmdOptions.noMentionPrefix) {
                 this.prefixes.push([`<@${this.user.id}> `, `<@!${this.user.id}> `])
+            }
+            if (this.owners === []) {
+                console.warn('No owners registered. Nobody will be able to use owner commands such as eval. The last argument of the bot constructor is the owners.')
             }
             if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
                 console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
@@ -40,20 +44,22 @@ class Nxtbot extends Eris.Client {
             let cmd = this.findCommand(cmdName)
             if (cmd === undefined) {
                 // invalid command; drop it again - but fire an event
-                this.cmdDispatch('invalidCommand', [ctx, cmdName])
+                this.cmdDispatch('commandInvalid', [ctx, cmdName])
+                return;
+            }
+            if (cmd.ownerOnly && ctx.author.id != this.owners) {
+                this.cmdDispatch('commandNotOwner', [ctx, cmdName])
                 return;
             }
             // fire the command!
-            try {
-                cmd.invoke(ctx, text)
-            } catch (e) {
+            cmd.code(ctx, text).catch(e => {
                 this.cmdDispatch('commandError', [ctx, cmdName, e])
-            }
+            })
         })
     }
 
     loadCommand(cmdObj) {
-        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms)
+        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.ownerOnly)
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
@@ -87,20 +93,24 @@ class Nxtbot extends Eris.Client {
                 this.loadCommand(c)
             })
         })
-        let cmdNames = this.commands.map(i => i.name)
-        this.commands = this.commands.filter((v, i, a) => !cmdNames.indexOf(v.name) === i.name)
+    }
+
+    parseMention(mention, guild) {
+        if (guild === undefined) {
+            return this.users.get(mention.match(/<@!?(\d+)>/g)[1])
+        } else {
+            return guild.members.get(mention.match(/<@!?(\d+)>/g)[1])
+        }
     }
 }
 
 class Command {
-    constructor(name, code, desc, perms) {
+    constructor(name, code, desc, perms, owner) {
         this.name = name
         this.code = code
-        this.desc = desc
+        this.description = desc
         this.perms = perms
-    }
-    invoke(ctx, args) {
-        this.code(ctx, args)
+        this.ownerOnly = owner
     }
 }
 
@@ -113,7 +123,7 @@ class Context {
         this.bot = bot
     }
 
-    send(content, file=undefined) {
+    send(content, file) {
         return this.bot.createMessage(this.channel.id, content, file)
     }
 }

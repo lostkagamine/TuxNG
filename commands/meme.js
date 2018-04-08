@@ -1,10 +1,8 @@
-var command = {
+module.exports = {
     name: 'hello',
     description: 'Hello world!',
-    code: (ctx, args) => {
+    code: async (ctx, args) => {
         ctx.send('Hello, world.')
     },
     perms: []
 }
-
-module.exports = command;

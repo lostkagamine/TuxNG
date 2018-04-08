@@ -3,7 +3,7 @@
 const Eris = require('eris')
 const handler = require('./src/handler.js')
 const config = require('./config.json')
-const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options)
+const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners)
 
 console.log('nxtbot starting...')
 
