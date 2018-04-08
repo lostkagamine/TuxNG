@@ -108,10 +108,11 @@ class Nxtbot extends Eris.Client {
     }
 
     parseMention(mention, guild) {
+        let match = mention.match(/<@!?(\d+)>/)
         if (guild === undefined) {
-            return this.users.get(mention.match(/<@!?(\d+)>/g)[1])
+            return this.users.get(match[1])
         } else {
-            return guild.members.get(mention.match(/<@!?(\d+)>/g)[1])
+            return guild.members.get(match[1])
         }
     }
 }
@@ -152,7 +153,8 @@ class Command {
 class Context {
     constructor(bot, msg, cmd) {
         this.author = msg.author
-        this.channel = msg.channel 
+        this.channel = msg.channel
+        this.guild = msg.guild
         this.message = msg
         this.command = cmd
         if (msg.channel.guild) {
