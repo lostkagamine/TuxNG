@@ -5,5 +5,6 @@ module.exports = {
         await ctx.send('System going down for reboot NOW!')
         process.exit(0)
     },
-    ownerOnly: true
+    ownerOnly: true,
+    aliases: ['die', 'reboot']
 }

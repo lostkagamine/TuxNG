@@ -10,5 +10,6 @@ module.exports = {
             await ctx.send(`\`\`\`\n${e}\`\`\``)
         }
     },
-    ownerOnly: true
+    ownerOnly: true,
+    aliases: ['ev', 'e']
 }

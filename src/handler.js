@@ -42,6 +42,7 @@ class Nxtbot extends Eris.Client {
             let text = m.content.slice(prefix.length).split(' ')
             let cmdName = text.shift()
             let cmd = this.findCommand(cmdName)
+            console.log(cmd)
             if (cmd === undefined) {
                 // invalid command; drop it again - but fire an event
                 this.cmdDispatch('commandInvalid', [ctx, cmdName])
@@ -63,18 +64,12 @@ class Nxtbot extends Eris.Client {
     }
 
     loadCommand(cmdObj) {
-        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.ownerOnly)
+        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.ownerOnly, cmdObj.aliases)
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
     findCommand(name) {
-        let command = undefined;
-        this.commands.forEach(i => {
-            if (i.name === name) {
-                command = i;
-            }
-        })
-        return command;
+        return this.commands.find(a => a.name === name || a.aliases.includes(name))
     }
 
     cmdEvent(name, code) {
@@ -109,12 +104,13 @@ class Nxtbot extends Eris.Client {
 }
 
 class Command {
-    constructor(name, code, desc, perms, owner) {
+    constructor(name, code, desc, perms, owner, aliases = []) {
         this.name = name
         this.code = code
         this.description = desc
         this.perms = perms
         this.ownerOnly = owner
+        this.aliases = aliases
     }
 }
 
