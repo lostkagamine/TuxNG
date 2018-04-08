@@ -1,5 +1,5 @@
 /*
- * ErioJS Command handler
+ * nxtbot Command handler
  * @author ry00001
  */
 
@@ -7,7 +7,7 @@ const Eris = require('eris');
 const fs = require('fs');
 const path = require('path')
 
-class Bot extends Eris.Client {
+class Nxtbot extends Eris.Client {
     constructor(token, prefixes = [], cmdOptions = {}) {
         super(token);
         this.commands = [];
@@ -112,4 +112,4 @@ class Context {
     }
 }
 
-module.exports = { Bot, Command, Context }
+module.exports = { Nxtbot, Command, Context }
