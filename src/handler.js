@@ -52,9 +52,13 @@ class Nxtbot extends Eris.Client {
                 return;
             }
             // fire the command!
-            cmd.code(ctx, text).catch(e => {
+            try {
+                cmd.code(ctx, text).catch(e => {
+                    this.cmdDispatch('commandError', [ctx, cmdName, e])
+                })
+            } catch(e) { // failsafe in case it's not async
                 this.cmdDispatch('commandError', [ctx, cmdName, e])
-            })
+            }
         })
     }
 
@@ -82,7 +86,7 @@ class Nxtbot extends Eris.Client {
 
     cmdDispatch(name, args) {
         if (!this.cevents[name]) return;
-        this.cevents[name].forEach(i => i(...args))
+        this.cevents[name].forEach(i => i(...args).catch(j => console.error(`Error in event ${name}: ${j}`)))
     }
 
     loadDir(commandsDir = './commands/') {
@@ -119,12 +123,13 @@ class Context {
         this.author = msg.author
         this.channel = msg.channel 
         this.message = msg
-        this.me = msg.channel.guild.members.get(bot.user.id)
+        if (msg.channel.guild)  { this.me = msg.channel.guild.members.get(bot.user.id); this.inDM = false }
+        else { this.inDM = true }
         this.bot = bot
     }
 
-    send(content, file) {
-        return this.bot.createMessage(this.channel.id, content, file)
+    async send(content, file) {
+        await this.bot.createMessage(this.channel.id, content, file)
     }
 }
 

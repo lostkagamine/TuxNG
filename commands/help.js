@@ -8,7 +8,7 @@ module.exports = {
             str += `[${i.name}]\n${i.description !== undefined ? i.description : "No description."}\n`
         }
         str += '```'
-        ctx.send(str)
+        await ctx.send(str)
     },
     "perms": []
 }

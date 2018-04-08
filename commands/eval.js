@@ -5,9 +5,9 @@ module.exports = {
         let code = args.join(' ')
         try {
             let result = eval(code)
-            ctx.send(`\`\`\`\n${result}\`\`\``)
+            await ctx.send(`\`\`\`\n${result}\`\`\``)
         } catch (e) {
-            ctx.send(`\`\`\`\n${e}\`\`\``)
+            await ctx.send(`\`\`\`\n${e}\`\`\``)
         }
     },
     ownerOnly: true
