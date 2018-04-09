@@ -21,6 +21,10 @@ engines:
     config: .eslintrc.json
   fixme:
       enabled: true
+      config:
+          strings:
+          - FIXME
+          - BUG
 ratings:
   paths:
   - "**.js"
