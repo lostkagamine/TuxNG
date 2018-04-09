@@ -4,6 +4,7 @@ const Eris = require('eris')
 const handler = require('./src/handler.js')
 const config = require('./config.json')
 const Redite = require('redite')
+const util = require('util')
 const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners)
 bot.db = new Redite({url: config.bot.redis_url});
 
@@ -18,7 +19,8 @@ bot.on('ready', () => {
 })
 
 bot.cmdEvent('commandError', async (ctx, err) => {
-    await ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${ctx.command.name})`)
+    await ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${ctx.command.name})`);
+    console.error('[Command error] ' + util.inspect(err))
 })
 
 bot.cmdEvent('commandNoDM', async ctx => {
