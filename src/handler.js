@@ -47,7 +47,7 @@ class Nxtbot extends Eris.Client {
                 this.cmdDispatch('commandInvalid', [ctx])
                 return;
             }
-            if (cmd.ownerOnly && ctx.author.id != this.owners) {
+            if (cmd.ownerOnly && !this.owners.includes(ctx.author.id)) {
                 this.cmdDispatch('commandNotOwner', [ctx])
                 return;
             }
@@ -130,17 +130,17 @@ class Command {
     }
 
     able(member) {
-        if (member.guild.ownerID == member.id) {
+        if (member.guild.ownerID === member.id) {
             return true; // since permission.has doesn't take in account guild ownership...
         }
         if (member.permission.has('administrator')) {
             return true;
         }
-        return this.botPerms.every(i => member.permission.has(i));
+        return this.perms.every(i => member.permission.has(i));
     }
 
     botAble(me) {
-        if (me.guild.ownerID == me.id) {
+        if (me.guild.ownerID === me.id) {
             return true; // since permission.has doesn't take in account guild ownership...
         }
         if (me.permission.has('administrator')) {
@@ -154,7 +154,7 @@ class Context {
     constructor(bot, msg, cmd) {
         this.author = msg.author
         this.channel = msg.channel
-        this.guild = msg.guild
+        this.guild = msg.channel.guild
         this.message = msg
         this.command = cmd
         if (msg.channel.guild) {
@@ -172,4 +172,4 @@ class Context {
     }
 }
 
-module.exports = { Nxtbot, Command, Context }
+module.exports = {Nxtbot, Command, Context}
