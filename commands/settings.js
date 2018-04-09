@@ -26,6 +26,12 @@ module.exports = {
             }
             let value = await ctx.bot.db[ctx.guild.id].settings[args[0]].get
             await ctx.send(`${validSettings[args[0]]} (${args[0]}): ${value || 'Not set.'}`)
+        } else {
+            let key = args[0]
+            let value = args[1]
+            if (!(key in validSettings)) {
+                return await ctx.send('Invalid value to query. Valid values: `' + Object.keys(validSettings).join(', ') + '`')
+            }
         }
     }
 }

@@ -1,6 +1,0 @@
-language: node_js
-node_js:
-  - "node"
-# travis test file
-# not much to see here
-# go away
