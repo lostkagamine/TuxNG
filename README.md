@@ -2,8 +2,8 @@
 A moderation bot.
 
 ## Setup
-Install Redis.  
-`npm i`.  
-Fill out config.  
-`node index.js`.  
-You're done.
+1. Install Redis.  
+2. `npm i`/`yarn i` 
+3. Fill out config.  
+4. `node index.js`. 
+5. You're done.
