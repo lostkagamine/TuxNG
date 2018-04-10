@@ -17,7 +17,7 @@ module.exports = {
             reason = `${ctx.author.username}#${ctx.author.discriminator}: ${reason}`
         }
         try {
-            await user.ban(reason);
+            await user.ban(7, reason);
             await ctx.send(`:hammer: Banned ${user.username}#${user.discriminator}.`)
         } catch(e) {
             await ctx.send(':x: | Unable to ban user. Check your role order.')
