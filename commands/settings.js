@@ -8,10 +8,10 @@ module.exports = {
                 test: v => { !!v; return true; },
                 value: v => !!v},
             kickStrikes: {name: 'Kick Strikes',
-                test: v => {  parseInt(v) },
+                test: v => {  return !isNaN(parseInt(v)) },
                 value: v => parseInt(v)},
             banStrikes: {name: 'Ban Strikes',
-                test: v => { parseInt(v) },
+                test: v => { return !isNaN(parseInt(v)) },
                 value: v => parseInt(v)}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
@@ -39,11 +39,14 @@ module.exports = {
                 return await ctx.send('Invalid value to set. Valid values: `' + Object.keys(validSettings).join(', ') + '`')
             }
             try {
-                validSettings[key].test(value)
+                let val = validSettings[key].test(value)
+                if (!val) {
+                    return await ctx.send('Your input doesn\'t pass tests. Are you sure it\'s the right value?')
+                }
             } catch(e) {
-                return await ctx.send('Your input doesn\'t pass tests. Booleans will always pass - numbers may not, based on `parseInt`\'s output.')
+                return await ctx.send('Your input doesn\'t pass tests. Are you sure it\'s the right value?')
             }
-            let res = validSettings[key].test(value)
+            let res = validSettings[key].value(value)
             await ctx.bot.db[ctx.guild.id].settings[key].set(res);
             await ctx.send('Successfully set.')
         }
