@@ -1,6 +1,7 @@
 module.exports = {
     name: 'help',
     description: 'Where you are.',
+    dmable: true,
     code: async (ctx, args) => {
         //throw new TypeError('a')
         let str = '```ini\n'

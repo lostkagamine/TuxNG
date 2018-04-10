@@ -1,6 +1,7 @@
 module.exports = {
     name: 'eval',
     description: 'Runs JavaScript code. Owner-only, for obvious reasons.',
+    dmable: true,
     code: async (ctx, args) => {
         let code = args.join(' ')
         try {

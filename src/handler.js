@@ -11,6 +11,7 @@ class Nxtbot extends Eris.Client {
     constructor(token, prefixes = [], cmdOptions = {}, owners = []) {
         super(token);
         this.commands = [];
+        this.eventHooks = [];
         this.cevents = {};
         this.prefixes = prefixes;
         this.cmdOptions = cmdOptions;
@@ -28,7 +29,7 @@ class Nxtbot extends Eris.Client {
                 console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
             }
 
-            if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.commandsDir ? this.cmdOptions.commandsDir : './commands/')
+            if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.eventsDir); this.loadEvents(this.cmdOptions.eventsDir)
         })
 
         this.on('messageCreate', m => {
@@ -81,6 +82,16 @@ class Nxtbot extends Eris.Client {
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
+    loadEvent(evtObj) {
+        for (let j of evtObj.events) {
+            if (evtObj.isHandler) {
+                this.cmdEvent(j, evtObj.code)
+            } else {
+                this.on(j, evtObj.code)
+            }
+        }
+    }
+
     findCommand(name) {
         return this.commands.find(a => a.name === name || a.aliases.includes(name))
     }
@@ -103,6 +114,16 @@ class Nxtbot extends Eris.Client {
                 let c = require(path.resolve(commandsDir + a))
                 if (this.cmdOptions.verbose) console.log(`Adding ${c.name}`)
                 this.loadCommand(c)
+            })
+        })
+    }
+
+    loadEvents(dir = './events') {
+        fs.readdir(dir, (e, files) => {
+            files.forEach(a => {
+                let c = require(path.resolve(dir + '/' + a))
+                if (this.cmdOptions.verbose) console.log(`Adding event ${c.name}`)
+                this.loadEvent(c)
             })
         })
     }

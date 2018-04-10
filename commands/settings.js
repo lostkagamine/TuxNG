@@ -25,7 +25,6 @@ module.exports = {
                 s += `${validSettings[a].name} (${a}): ${thing || 'Not set.'}\n\n`
             }
             await ctx.send(s)
-            
         } else if (args[0] && !args[1]) {
             if (!(args[0] in validSettings)) {
                 return await ctx.send('Invalid value to query.')
