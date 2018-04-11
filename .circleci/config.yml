@@ -20,9 +20,9 @@ jobs:
       - checkout
 
       - run:
-          name: Installing dependencies
-          command: npm install --dev
+          name: Install dependencies
+          command: npm install --only=dev
       # run tests!
       - run:
-          name: Running tests
+          name: Run tests
           command: npm test
