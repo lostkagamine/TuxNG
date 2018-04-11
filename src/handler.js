@@ -136,6 +136,57 @@ class Nxtbot extends Eris.Client {
             return guild.members.get(match[1])
         }
     }
+
+    async addStrike(user, count=1, reason) {
+        if (!await this.db.strikes.exists()) {
+            await this.db.strikes.set({})
+        }
+        if (!await this.db.strikes[user.id].exists()) {
+            await this.db.strikes[user.id].set({})
+            await this.db.strikes[user.guild.id].set(0)
+        }
+        this.db.strikes[user.id][user.guild.id].get.then(a => {
+            a += count
+            this.db.strikes[user.id][user.guild.id].set(a)
+            this.cmdDispatch('strikeAdd', [this, 'add', user, count, reason])
+        }).catch(() => {
+            let currStrikes = count;
+            this.db.strikes[user.id][user.guild.id].set(currStrikes)
+            this.cmdDispatch('strikeAdd', [this, 'add', user, count, reason])
+        })
+    }
+
+    async removeStrike(user, count=1) {
+        if (!await this.db.strikes.exists()) {
+            await this.db.strikes.set({})
+        }
+        if (!await this.db.strikes[user.id].exists()) {
+            await this.db.strikes[user.id].set({})
+            await this.db.strikes[user.guild.id].set({})
+        }
+        this.db.strikes[user.id][user.guild.id].get.then(a => {
+            a -= count
+            this.db.strikes[user.id][user.guild.id].set(a)
+            this.cmdDispatch('strikeAdd', [this, 'add', user, count])
+        }).catch(() => {})
+    }
+
+    async getStrikes(user) {
+        if (!await this.db.strikes[user.id].exists() || !await this.db.strikes[user.id][user.guild.id].exists()) {
+            return 0;
+        }
+        let strikes = await this.db.strikes[user.id][user.guild.id].get;
+        if (strikes === undefined) {
+            return 0;
+        } else {
+            return strikes;
+        }
+    }
+
+    async setStrikes(user, count) {
+        await this.db.strikes[user.id][user.guild.id].set(count);
+        this.cmdDispatch('strikeSet', [this, 'set', user, count])
+    }
 }
 
 class Command {

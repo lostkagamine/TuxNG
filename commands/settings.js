@@ -4,19 +4,16 @@ module.exports = {
     perms: ['manageGuild'],
     code: async (ctx, args) => {
         let validSettings = {
-            automod: {name: 'Automod',
+            automod_invites: {name: 'Invite Automod',
                 test: v => { !!v; return true; },
                 value: v => !!v},
-            kickStrikes: {name: 'Kick Strikes',
-                test: v => {  return !isNaN(parseInt(v)) },
-                value: v => parseInt(v)},
-            banStrikes: {name: 'Ban Strikes',
+            invite_strikes: {name: 'Invite Strikes',
                 test: v => { return !isNaN(parseInt(v)) },
                 value: v => parseInt(v)}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
             console.log('creating...')
-            await ctx.bot.db[ctx.guild.id].set({settings: {g: ctx.guild.id}})
+            await ctx.bot.db[ctx.guild.id].set({settings: {}, punishments: []})
         }
         if (!args[0]) {
             let s = '**nxtbot Settings Panel**\n\n'

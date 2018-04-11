@@ -16,6 +16,12 @@ bot.on('ready', () => {
         console.log('nxtbot can only be ran under bot accounts. Exiting...')
         process.exit(1);
     }
+
+    bot.db.strikes.exists().then(r => {
+        if (!r) {
+            bot.db.strikes.set({})
+        }
+    })
 })
 
 bot.cmdEvent('commandError', async (ctx, err) => {
