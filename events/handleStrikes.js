@@ -16,11 +16,11 @@ module.exports = {
             if (punishment.action === 'ban') {
                 await u.ban(7, formatReason(reason));
                 await bot.setStrikes(u, 0);
-                return;
+                
             } else if (punishment.action === 'kick') {
                 await u.kick(formatReason(reason));
-                return;
+                
             }
-    }
         }
+    }
 }
