@@ -8,16 +8,19 @@ module.exports = {
         if (type === 'add') {
             let count = await bot.getStrikes(u)
             let p = await bot.db[u.guild.id].punishments.get
-            for (let i of p) {
-                if (count >= parseInt(i.count)) {
-                    if (i.action === 'ban') {
-                        await u.ban(formatReason(reason));
-                        await bot.setStrikes(u, 0);
-                    } else if (i.action === 'kick') {
-                        await u.kick(7, formatReason(reason));
-                    }
-                }
+            let counts = p.map(a => parseInt(a.count)).filter(a => a < count)
+            if (counts === []) return;
+            let max = Math.max(...counts)
+            let punishment = p[counts.indexOf(max)]
+            if (!punishment) return;
+            if (punishment.action === 'ban') {
+                await u.ban(7, formatReason(reason));
+                await bot.setStrikes(u, 0);
+                return;
+            } else if (punishment.action === 'kick') {
+                await u.kick(formatReason(reason));
+                return;
             }
-        }
     }
+        }
 }

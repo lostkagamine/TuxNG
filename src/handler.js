@@ -105,7 +105,7 @@ class Nxtbot extends Eris.Client {
 
     cmdDispatch(name, args) {
         if (!this.cevents[name]) return;
-        this.cevents[name].forEach(i => i(...args).catch(j => console.error(`Error in event ${name}: ${j}`)))
+        this.cevents[name].forEach(i => i(...args).catch(j => console.error(`Error in event ${name}: ${j.stack}`)))
     }
 
     loadDir(commandsDir = './commands/') {
