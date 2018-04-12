@@ -5,7 +5,7 @@ module.exports = {
     botPerms: ['kickMembers'],
     dmable: false,
     code: async (ctx, args) => {
-        let user = ctx.bot.parseMention(args.shift(), ctx.guild)
+        let user = ctx.bot.parseUser(args.shift(), ctx.guild)
         let reason = args.join(' ')
         if (user === undefined) {
             return await ctx.send(':x: | Invalid user. Be sure to mention them.')

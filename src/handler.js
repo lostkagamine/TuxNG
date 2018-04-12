@@ -131,11 +131,25 @@ class Nxtbot extends Eris.Client {
 
     parseMention(mention, guild) {
         let match = mention.match(/<@!?(\d+)>/)
+        if (!match) return undefined
         if (guild === undefined) {
             return this.users.get(match[1])
         } else {
             return guild.members.get(match[1])
         }
+    }
+
+    parseUser(str, guild) {
+        let m = this.parseMention(str, guild)
+        if (m) return m
+        let thing = guild ? guild.members : this.users
+        m = thing.get(str)
+        if (m) return m
+        m = thing.find(a => a.username === str)
+        if (m) return m
+        m = thing.find(a => `${a.username}#${a.discriminator}` === str)
+        if (m) return m
+        return undefined
     }
 
     async addStrike(user, count=1, reason) {

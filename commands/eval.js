@@ -9,7 +9,7 @@ module.exports = {
             if (result && typeof result.then === 'function') result = await result;
             await ctx.send(`\`\`\`\n${result}\`\`\``)
         } catch(e) {
-            await ctx.send(`\`\`\`\n${e}\`\`\``)
+            await ctx.send(`\`\`\`\n${e.stack}\`\`\``)
         }
     },
     ownerOnly: true,
