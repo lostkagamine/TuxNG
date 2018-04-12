@@ -7,5 +7,5 @@ module.exports = {
         process.exit(0)
     },
     ownerOnly: true,
-    aliases: ['die', 'reboot']
+    aliases: ['die', 'reboot', 'kys']
 }

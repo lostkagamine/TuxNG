@@ -16,6 +16,7 @@ var cycleGame = () => {
     let games = [
         {name: 'with hammers', type: 0},
         {name: 'for invites', type: 3},
+        {name: 'the messages flow', type: 3},
         {name: 'the help command', type: 2},
         {name: 'with JavaScript', type: 0},
         {name: 'https://github.com/ry00001/nxtbot', type: 0}
