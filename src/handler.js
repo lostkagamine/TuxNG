@@ -33,6 +33,7 @@ class Nxtbot extends Eris.Client {
         })
 
         this.on('messageCreate', m => {
+            if (m.author.bot) return;
             let prefix = undefined;
             this.prefixes.forEach(i => {if (m.content.startsWith(i)) { prefix = i }})
             if (prefix === undefined) {
