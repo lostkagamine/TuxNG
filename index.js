@@ -10,6 +10,21 @@ bot.db = new Redite({url: config.bot.redis_url});
 
 console.log('nxtbot starting...')
 
+var currGame = 0;
+
+var cycleGame = () => {
+    let games = [
+        {name: 'with hammers', type: 0},
+        {name: 'for invites', type: 3},
+        {name: 'the help command', type: 2},
+        {name: 'with JavaScript', type: 0},
+        {name: 'https://github.com/ry00001/nxtbot', type: 0}
+    ]
+    currGame++;
+    if (currGame >= games.length) currGame = 0;
+    bot.editStatus('online', {name: games[currGame].name + ` | ${bot.prefixes[0]}help - ${bot.guilds.size} servers`, type: games[currGame].type})
+}
+
 bot.on('ready', () => {
     console.log(`Ready, connected as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`)
     if (!bot.bot) {
@@ -31,6 +46,9 @@ bot.on('ready', () => {
             }
         })
     }
+
+    cycleGame();
+    setInterval(() => cycleGame(), 120000)
 })
 
 bot.cmdEvent('commandError', async (ctx, err) => {
