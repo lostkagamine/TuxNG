@@ -22,6 +22,15 @@ bot.on('ready', () => {
             bot.db.strikes.set({})
         }
     })
+
+    for (let guild of bot.guilds) {
+        bot.db[guild[1].id].get.then(a => {
+            if (!a || !a.settings || !a.punishments) {
+                console.log('Creating information for guild ' + guild[1].name)
+                bot.db[guild[1].id].set({settings: {}, punishments: []})
+            }
+        })
+    }
 })
 
 bot.cmdEvent('commandError', async (ctx, err) => {

@@ -14,11 +14,11 @@ module.exports = {
             let punishment = p[counts.indexOf(max)]
             if (!punishment) return;
             if (punishment.action === 'ban') {
-                await u.ban(7, formatReason(reason));
+                await u.ban(7, formatReason(reason)).catch(e => {});
                 await bot.setStrikes(u, 0);
                 
             } else if (punishment.action === 'kick') {
-                await u.kick(formatReason(reason));
+                await u.kick(formatReason(reason)).catch(e => {});
                 
             }
         }
