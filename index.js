@@ -1,4 +1,9 @@
-// JYABA SKURIPUTO
+/*
+ * nxtbot
+ * by your average cat, ry00001
+ * version "I have no idea what I'm doing"
+ * builds: passing (probably at least)
+ */
 
 const Eris = require('eris')
 const handler = require('./src/handler.js')
@@ -26,6 +31,29 @@ var cycleGame = () => {
     bot.editStatus('online', {name: games[currGame].name + ` | ${bot.prefixes[0]}help - ${bot.guilds.size} servers`, type: games[currGame].type})
 }
 
+
+var makeGuildInfo = g => {
+    bot.db[g.id].get.then(a => {
+        if (!a || !a.settings || !a.punishments) {
+            console.log('Creating information for guild ' + g.name)
+            bot.db[g.id].set({settings: {}, punishments: []})
+        }
+    })
+}
+
+var delGuildInfo = g => {
+    console.log('Deleting information for guild ' + g.name)
+    bot.db[g.id].set({})
+}
+
+bot.on('guildCreate', g => {
+    makeGuildInfo(g)
+})
+
+bot.on('guildDelete', g => {
+    delGuildInfo(g) // clean up after ourselves
+})
+
 bot.on('ready', () => {
     console.log(`Ready, connected as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`)
     if (!bot.bot) {
@@ -40,12 +68,7 @@ bot.on('ready', () => {
     })
 
     for (let guild of bot.guilds) {
-        bot.db[guild[1].id].get.then(a => {
-            if (!a || !a.settings || !a.punishments) {
-                console.log('Creating information for guild ' + guild[1].name)
-                bot.db[guild[1].id].set({settings: {}, punishments: []})
-            }
-        })
+        makeGuildInfo(guild[1]) // [1] is required because lol collections.
     }
 
     cycleGame();
@@ -53,7 +76,7 @@ bot.on('ready', () => {
 })
 
 bot.cmdEvent('commandError', async (ctx, err) => {
-    await ctx.send(`oopsie woopsie, ry hecked up! >.<\nPlease send this detailed:tm: error:tm: information:tm: to him:\n\`\`\`\n${err}\`\`\` (in command ${ctx.command.name})`);
+    await ctx.send(`Oops, it seems like an error has occurred. Please report this to the developer of this bot.\n\`\`\`\n${err}\`\`\` (in command ${ctx.command.name})`);
     console.error('[Command error] ' + util.inspect(err))
 })
 
@@ -61,7 +84,12 @@ bot.cmdEvent('commandNoDM', async ctx => {
     await ctx.send(':x: | This command cannot be used in Direct Messages.')
 })
 
-bot.cmdEvent('commandNotOwner', async ctx => { await ctx.send('Nice try, but did you really think I\'d let you?') })
+bot.cmdEvent('commandNotOwner', async ctx => { 
+    let msgs = ['...Nope.',
+        'Nice try, but did you really think I\'d let you?',
+        'Why even bother trying? Not like I\'ll let you.']
+    await ctx.send(msgs[Math.floor(Math.random() * msgs.length)])
+})
 
 bot.cmdEvent('commandNoPermissions', async ctx => {
     await ctx.send(':no_entry_sign: | Invalid permissions.')
