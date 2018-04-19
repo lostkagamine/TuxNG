@@ -8,11 +8,12 @@ const fs = require('fs');
 const path = require('path')
 
 class Nxtbot extends Eris.Client {
-    constructor(token, prefixes = [], cmdOptions = {}, owners = []) {
+    constructor(token, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
         super(token);
         this.commands = [];
         this.eventHooks = [];
         this.cevents = {};
+        this.config = config;
         this.prefixes = prefixes;
         this.cmdOptions = cmdOptions;
         this.owners = owners;

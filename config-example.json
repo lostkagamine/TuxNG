@@ -1,0 +1,14 @@
+{
+    "discord": {
+        "token": "<Discord token>"
+    },
+    "bot": {
+        "prefixes": ["List of prefixes"],
+        "owners": ["Owner IDs"],
+        "redis_url": "redis://127.0.0.1:6379/0",
+        "options": {},
+        "logging": false,
+        "guild_channel": "<replace this with your guild logging channel if you do turn logging on>",
+        "error_channel": "<replace this with your error channel if you do turn logging on>"
+    }
+}

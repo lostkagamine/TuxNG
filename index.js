@@ -10,7 +10,7 @@ const handler = require('./src/handler.js')
 const config = require('./config.json')
 const Redite = require('redite')
 const util = require('util')
-const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners)
+const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners, config)
 bot.db = new Redite({url: config.bot.redis_url});
 
 console.log('nxtbot starting...')
@@ -48,10 +48,58 @@ var delGuildInfo = g => {
 
 bot.on('guildCreate', g => {
     makeGuildInfo(g)
+    if (bot.config.bot.logging) {
+        bot.createMessage(bot.config.bot.guild_channel, {
+            embed: {
+                title: `New guild: ${g.name} (${g.id})`,
+                color: 0x00FF00,
+                description: 'A new user has added nxtbot to their guild.',
+                thumbnail: {
+                    url: g.iconURL
+                },
+                fields: [
+                    {
+                        name: 'Owned by',
+                        value: bot.users.get(g.ownerID) ? `${bot.users.get(g.ownerID).username}#${bot.users.get(g.ownerID).discriminator}` : '???',
+                        inline: false
+                    },
+                    {
+                        name: 'Members',
+                        value: `${g.members.size} (${g.members.filter(a => a.bot).length} bots)`,
+                        inline: false
+                    }
+                ]
+            }
+        })
+    }
 })
 
 bot.on('guildDelete', g => {
     delGuildInfo(g) // clean up after ourselves
+    if (bot.config.bot.logging) {
+        bot.createMessage(bot.config.bot.guild_channel, {
+            embed: {
+                title: `Lost guild: ${g.name} (${g.id})`,
+                color: 0xFF0000,
+                description: 'Somebody has removed nxtbot from their guild.',
+                thumbnail: {
+                    url: g.iconURL
+                },
+                fields: [
+                    {
+                        name: 'Owned by',
+                        value: bot.users.get(g.ownerID) ? `${bot.users.get(g.ownerID).username}#${bot.users.get(g.ownerID).discriminator}` : '???',
+                        inline: false
+                    },
+                    {
+                        name: 'Members',
+                        value: `${g.members.size} (${g.members.filter(a => a.bot).length} bots)`,
+                        inline: false
+                    }
+                ]
+            }
+        })
+    }
 })
 
 bot.on('ready', () => {
