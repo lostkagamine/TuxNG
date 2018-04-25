@@ -11,9 +11,20 @@ const config = require('./config.json')
 const Redite = require('redite')
 const util = require('util')
 const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners, config)
-bot.db = new Redite({url: config.bot.redis_url});
 
 console.log('nxtbot starting...')
+
+const run = () => {
+    let ci = process.env.CI
+    if (ci) {
+        console.log('Continuous Integration detected, loading all modules then exiting...');
+        bot.loadDir(bot.options.commandsDir);
+        process.exit(0);
+    } else {
+        bot.db = new Redite({url: config.bot.redis_url});
+        bot.connect();
+    }
+}
 
 var currGame = 0;
 
@@ -147,4 +158,4 @@ bot.cmdEvent('commandBotNoPermissions', async ctx => {
     await ctx.send(':no_entry_sign: | The bot doesn\'t have enough permissions to run this.')
 })
 
-bot.connect();
+run();
