@@ -16,10 +16,8 @@ module.exports = {
             if (punishment.action === 'ban') {
                 await u.ban(7, formatReason(reason)).catch(e => {});
                 await bot.setStrikes(u, 0);
-                
             } else if (punishment.action === 'kick') {
                 await u.kick(formatReason(reason)).catch(e => {});
-                
             }
         }
     }
