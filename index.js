@@ -7,8 +7,9 @@
 
 const Eris = require('eris')
 const handler = require('./src/handler.js')
+var config = {};
 if (process.env.CI) { 
-    const config = {
+    config = {
         discord: {
             token: 'FAKE'
         },
@@ -19,7 +20,7 @@ if (process.env.CI) {
         }
     }
 } else {
-    const config = require('./config.json')
+    config = require('./config.json')
 }
 const Redite = require('redite')
 const util = require('util')
