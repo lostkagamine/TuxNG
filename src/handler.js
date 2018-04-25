@@ -11,6 +11,7 @@ class Nxtbot extends Eris.Client {
     constructor(token, isCI = false, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
         super(token);
         this.commands = [];
+        this.isCI = isCI;
         if (!isCI) { 
             this.eventHooks = [];
             this.cevents = {};
@@ -101,6 +102,7 @@ class Nxtbot extends Eris.Client {
     }
 
     cmdEvent(name, code) {
+        if (this.isCI) return;
         if (this.cevents[name] === undefined) {
             this.cevents[name] = []
         }

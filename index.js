@@ -21,6 +21,9 @@ if (process.env.CI) {
     }
 } else {
     config = require('./config.json')
+    if (config.bot.fakeEnv) {
+        process.env = config.bot.fakeEnv
+    }
 }
 const Redite = require('redite')
 const util = require('util')
