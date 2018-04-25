@@ -8,75 +8,77 @@ const fs = require('fs');
 const path = require('path')
 
 class Nxtbot extends Eris.Client {
-    constructor(token, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
+    constructor(token, isCI = false, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
         super(token);
         this.commands = [];
-        this.eventHooks = [];
-        this.cevents = {};
-        this.config = config;
-        this.prefixes = prefixes;
-        this.cmdOptions = cmdOptions;
-        this.owners = owners;
+        if (!isCI) { 
+            this.eventHooks = [];
+            this.cevents = {};
+            this.config = config;
+            this.prefixes = prefixes;
+            this.cmdOptions = cmdOptions;
+            this.owners = owners;
 
-        this.on('ready', () => {
+            this.on('ready', () => {
             // Housekeeping
-            if (!this.cmdOptions.noMentionPrefix) {
-                this.prefixes.push([`<@${this.user.id}> `, `<@!${this.user.id}> `])
-            }
-            if (this.owners === []) {
-                console.warn('No owners registered. Nobody will be able to use owner commands such as eval. The last argument of the bot constructor is the owners.')
-            }
-            if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
-                console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
-            }
+                if (!this.cmdOptions.noMentionPrefix) {
+                    this.prefixes.push([`<@${this.user.id}> `, `<@!${this.user.id}> `])
+                }
+                if (this.owners === []) {
+                    console.warn('No owners registered. Nobody will be able to use owner commands such as eval. The last argument of the bot constructor is the owners.')
+                }
+                if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
+                    console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
+                }
 
-            if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.commandsDir); this.loadEvents(this.cmdOptions.eventsDir)
-        })
+                if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.commandsDir); this.loadEvents(this.cmdOptions.eventsDir)
+            })
 
-        this.on('messageCreate', m => {
-            if (m.author.bot) return;
-            let prefix = undefined;
-            this.prefixes.forEach(i => {if (m.content.startsWith(i)) { prefix = i }})
-            if (prefix === undefined) {
+            this.on('messageCreate', m => {
+                if (m.author.bot) return;
+                let prefix = undefined;
+                this.prefixes.forEach(i => {if (m.content.startsWith(i)) { prefix = i }})
+                if (prefix === undefined) {
                 // no prefix found; drop the message
-                return;
-            }
-            let text = m.content.slice(prefix.length).split(' ')
-            let cmdName = text.shift()
-            let cmd = this.findCommand(cmdName)
-            let ctx = new Context(this, m, cmd)
-            if (cmd === undefined) {
+                    return;
+                }
+                let text = m.content.slice(prefix.length).split(' ')
+                let cmdName = text.shift()
+                let cmd = this.findCommand(cmdName)
+                let ctx = new Context(this, m, cmd)
+                if (cmd === undefined) {
                 // invalid command; drop it again - but fire an event
-                this.cmdDispatch('commandInvalid', [ctx])
-                return;
-            }
-            if (cmd.ownerOnly && !this.owners.includes(ctx.author.id)) {
-                this.cmdDispatch('commandNotOwner', [ctx])
-                return;
-            }
-            if (ctx.isDM && !cmd.canBeDM) {
-                this.cmdDispatch('commandNoDM', [ctx])
-                return
-            }
-            if (!ctx.isDM) {
-                if (!cmd.botAble(ctx.me)) {
-                    this.cmdDispatch('commandBotNoPermissions', [ctx])
+                    this.cmdDispatch('commandInvalid', [ctx])
                     return;
                 }
-                if (!cmd.able(ctx.member)) {
-                    this.cmdDispatch('commandNoPermissions', [ctx])
+                if (cmd.ownerOnly && !this.owners.includes(ctx.author.id)) {
+                    this.cmdDispatch('commandNotOwner', [ctx])
                     return;
                 }
-            }
-            // fire the command!
-            try {
-                cmd.code(ctx, text).catch(e => {
+                if (ctx.isDM && !cmd.canBeDM) {
+                    this.cmdDispatch('commandNoDM', [ctx])
+                    return
+                }
+                if (!ctx.isDM) {
+                    if (!cmd.botAble(ctx.me)) {
+                        this.cmdDispatch('commandBotNoPermissions', [ctx])
+                        return;
+                    }
+                    if (!cmd.able(ctx.member)) {
+                        this.cmdDispatch('commandNoPermissions', [ctx])
+                        return;
+                    }
+                }
+                // fire the command!
+                try {
+                    cmd.code(ctx, text).catch(e => {
+                        this.cmdDispatch('commandError', [ctx, e])
+                    })
+                } catch(e) { // failsafe in case it's not async
                     this.cmdDispatch('commandError', [ctx, e])
-                })
-            } catch(e) { // failsafe in case it's not async
-                this.cmdDispatch('commandError', [ctx, e])
-            }
-        })
+                }
+            })
+        }
     }
 
     loadCommand(cmdObj) {

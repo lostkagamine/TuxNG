@@ -7,10 +7,12 @@
 
 const Eris = require('eris')
 const handler = require('./src/handler.js')
-const config = require('./config.json')
+if (!process.env.CI) { 
+    const config = require('./config.json')
+}
 const Redite = require('redite')
 const util = require('util')
-const bot = new handler.Nxtbot(config.discord.token, config.bot.prefixes, config.bot.options, config.bot.owners, config)
+const bot = new handler.Nxtbot(config.discord.token, process.env.CI, config.bot.prefixes, config.bot.options, config.bot.owners, config)
 
 console.log('nxtbot starting...')
 
