@@ -3,6 +3,7 @@ const superagent = require('superagent')
 module.exports = {
     name: 'git',
     ownerOnly: true,
+    description: 'Easy access to the git command for updating.',
     code: async (ctx, args) => {
         let process = require('child_process').spawnSync('git', args)
         let output = `\`\`\`${process.stdout.toString()}\n${process.stderr.toString()}\`\`\`Exited with code ${process.status}, PID ${process.pid}`

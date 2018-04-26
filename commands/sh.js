@@ -3,6 +3,7 @@ const superagent = require('superagent')
 module.exports = {
     name: 'sh',
     ownerOnly: true,
+    description: 'Runs a shell command.',
     code: async (ctx, args) => {
         let process = require('child_process').spawnSync(args.shift(), args)
         let codes = {
