@@ -12,6 +12,7 @@ module.exports = {
             if (result && typeof result.then === 'function') result = await result;
             let inspect = !/\/\/ ?no(?:-| )?inspect/.test(code)
             if (inspect) result = util.inspect(result)
+            let len = result.length || toString(result).length
             if (result.length > 2000) {
                 superagent.post('https://hastebin.com/documents')
                     .type('text/plain')
