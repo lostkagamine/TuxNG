@@ -12,7 +12,12 @@ module.exports = {
             if (result && typeof result.then === 'function') result = await result;
             let inspect = !/\/\/ ?no(?:-| )?inspect/.test(code)
             if (inspect) result = util.inspect(result)
-            let len = result.length || toString(result).length
+            let len;
+            try {
+                len = result.length || toString(result).length
+            } catch(e) {
+                return await ctx.send(`\`\`\`No output.\`\`\``)
+            }
             if (len > 2000) {
                 superagent.post('https://hastebin.com/documents')
                     .type('text/plain')
@@ -24,6 +29,7 @@ module.exports = {
                 await ctx.send(`\`\`\`\n${result}\`\`\``)
             }
         } catch(e) {
+            if (/\/\/ ?stack/.test(code)) e = e.stack
             await ctx.send(`\`\`\`\n${e}\`\`\``)
         }
     },
