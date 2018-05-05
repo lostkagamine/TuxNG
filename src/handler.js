@@ -207,6 +207,10 @@ class Nxtbot extends Eris.Client {
         await this.db.strikes[user.id][user.guild.id].set(count);
         this.cmdDispatch('strikeSet', [this, 'set', user, count])
     }
+
+    isOwner(user) {
+        return this.owners.includes(user.id)
+    }
 }
 
 class Command {
