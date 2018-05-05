@@ -13,7 +13,7 @@ module.exports = {
             let inspect = !/\/\/ ?no(?:-| )?inspect/.test(code)
             if (inspect) result = util.inspect(result)
             let len = result.length || toString(result).length
-            if (result.length > 2000) {
+            if (len > 2000) {
                 superagent.post('https://hastebin.com/documents')
                     .type('text/plain')
                     .send(result)
