@@ -29,8 +29,9 @@ module.exports = {
                 await ctx.send(`\`\`\`\n${result}\`\`\``)
             }
         } catch(e) {
-            if (/\/\/ ?stack/.test(code)) e = e.stack
-            await ctx.send(`\`\`\`\n${e}\`\`\``)
+            let te = e;
+            if (/\/\/ ?stack/.test(code)) te = e.stack
+            await ctx.send(`\`\`\`\n${te}\`\`\``)
         }
     },
     ownerOnly: true,
