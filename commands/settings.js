@@ -9,7 +9,10 @@ module.exports = {
                 value: v => !!v},
             invite_strikes: {name: 'Invite Strikes',
                 test: v => { return !isNaN(parseInt(v)) },
-                value: v => parseInt(v)}
+                value: v => parseInt(v)},
+            fake_invites: {name: 'Block Fake Invites via Automod',
+                test: v => { !!v; return true; },
+                value: v => !!v}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
             console.log('creating...')

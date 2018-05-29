@@ -10,8 +10,8 @@ module.exports = {
         try {
             let result = eval(code)
             if (result && typeof result.then === 'function') result = await result;
-            let inspect = !/\/\/ ?no(?:-| )?inspect/.test(code)
-            if (inspect) result = util.inspect(result)
+            let inspect = !/\/\/ ?inspect/.test(code)
+            if (!inspect) result = util.inspect(result)
             let len;
             try {
                 len = result.length || toString(result).length

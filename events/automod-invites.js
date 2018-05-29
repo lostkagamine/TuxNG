@@ -5,7 +5,12 @@ module.exports = {
         let content = m.content
         let bot = m._client
         if (!m.member) return;
-        let guild = m.member.guild
+        let guild = m.member.guild;
+        let punish = settings => {
+            let me = guild.members.get(bot.user.id)
+            bot.addStrike(m.member, settings.invite_strikes || 1, 'Posting invite link.')
+            m.delete().catch(() => {})
+        }
         bot.db[guild.id].settings.get.then(settings => {
             if (!guild) {
                 // DM (but why are they trying to shill in the bot's DMs in the first place...?)
@@ -15,18 +20,20 @@ module.exports = {
                 // oheck invite
                 let match = invitere.exec(content)
                 if (!match) return;
-                let invite = bot.getInvite(match[1]).then(i => {
-                    if (!i) {
-                        return; // invalid for some reason
-                    }
-                    if (i.guild.id === guild.id) {
-                        return; // invite points to current guild
-                    }
-                    // invite detected AND invite was for different guild
-                    let me = guild.members.get(bot.user.id)
-                    bot.addStrike(m.member, settings.invite_strikes || 1, 'Posting invite link.')
-                    m.delete().catch(() => {})
-                }).catch(i => {})
+                if (settings.fake_invites) {
+                    punish(settings);
+                } else {
+                    let invite = bot.getInvite(match[1]).then(i => {
+                        if (!i) {
+                            return; // invalid for some reason
+                        }
+                        if (i.guild.id === guild.id) {
+                            return; // invite points to current guild
+                        }
+                        // invite detected AND invite was for different guild
+                        punish(settings)
+                    }).catch(i => {})
+                }
             }
         })
     }

@@ -21,12 +21,12 @@ class Nxtbot extends Eris.Client {
             this.owners = owners;
 
             this.on('ready', () => {
-            // Housekeeping
+                // Housekeeping
                 if (!this.cmdOptions.noMentionPrefix) {
-                    this.prefixes.push([`<@${this.user.id}> `, `<@!${this.user.id}> `])
+                    this.prefixes.push(`<@${this.user.id}> `, `<@!${this.user.id}> `);
                 }
                 if (this.owners === []) {
-                    console.warn('No owners registered. Nobody will be able to use owner commands such as eval. The last argument of the bot constructor is the owners.')
+                    console.warn('No owners registered. Nobody will be able to use owner commands such as eval. The second-to-last argument of the bot constructor is the owners.')
                 }
                 if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
                     console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
@@ -75,7 +75,7 @@ class Nxtbot extends Eris.Client {
                     cmd.code(ctx, text).catch(e => {
                         this.cmdDispatch('commandError', [ctx, e])
                     })
-                } catch(e) { // failsafe in case it's not async
+                } catch(e) { // failsafe in case it's not async because I am kind of an idiot and forget sometimes
                     this.cmdDispatch('commandError', [ctx, e])
                 }
             })
@@ -264,7 +264,7 @@ class Context {
     }
 
     async send(content, file) {
-        await this.bot.createMessage(this.channel.id, content, file)
+        return await this.bot.createMessage(this.channel.id, content, file)
     }
 }
 
