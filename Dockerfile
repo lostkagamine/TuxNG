@@ -21,6 +21,6 @@ WORKDIR /usr/src/nxtbot
 
 USER 1000
 
-RUN yarn i --save
+RUN yarn install
 
 ENTRYPOINT [ "node", "/usr/src/nxtbot/index.js" ]
