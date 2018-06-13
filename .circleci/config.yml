@@ -22,7 +22,7 @@ jobs:
      
       - run:
           name: Install npm 4
-          command: npm install -g npm@4
+          command: sudo npm install -g npm@4
       - run:
           name: Install dependencies
           command: npm install --dev
