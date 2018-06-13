@@ -38,3 +38,7 @@ jobs:
           name: Push Docker image
           command: docker push ry00001/nxtbot:unstable
       # </docker>
+
+notify:
+  webhooks:
+     - url: https://circledisc-clarity.herokuapp.com/webhook/circle
