@@ -21,6 +21,6 @@ WORKDIR /usr/src/nxtbot
 
 USER 1000
 
-RUN npm i --save
+RUN yarn i --save
 
 ENTRYPOINT [ "node", "/usr/src/nxtbot/index.js" ]
