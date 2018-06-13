@@ -2,3 +2,9 @@ node_modules/
 config.json
 .vscode/
 .git/
+codeclimate.yml
+.eslintrc.json
+Dockerfile
+.dockerignore
+*.md
+*.json
