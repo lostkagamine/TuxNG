@@ -21,6 +21,19 @@ if (process.env.CI) {
             options: {}
         }
     }
+} else if (process.env.DOCKER) {
+    // running in Docker, do a thing!
+    config = {
+        discord: {
+            token: process.env.TOKEN
+        },
+        bot: {
+            prefixes: process.env.PREFIXES.split(' / '),
+            owners: process.env.OWNERS.split(' '),
+            options: {},
+            redis_url: process.env.REDIS
+        }
+    }
 } else {
     config = require('./config.json')
 }
