@@ -36,8 +36,13 @@ jobs:
           command: docker build -t ry00001/nxtbot:unstable .
       - run:
           name: Push Docker image
-          command: docker push ry00001/nxtbot:unstable
+          command: docker push ry00001/nxtbot:unstable 
       # </docker>
+      
+      - run:
+          name: Push Docker image (Clarity)
+          command: docker login -u $CLARITY_REP_DOCKER_USER -p $CLARITY_REP_DOCKER_PASS && \
+                   docker push claritymoe/nxtbot:latest
 
 notify:
   webhooks:
