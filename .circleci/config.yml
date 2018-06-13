@@ -49,8 +49,7 @@ jobs:
       
       - run:
           name: Push Docker image (Clarity)
-          command: docker login -u $CLARITY_REP_DOCKER_USER -p $CLARITY_REP_DOCKER_PASS && \
-                   docker push claritymoe/nxtbot:latest
+          command: docker login -u $CLARITY_REP_DOCKER_USER -p $CLARITY_REP_DOCKER_PASS && docker push claritymoe/nxtbot:latest
 
 notify:
   webhooks:
