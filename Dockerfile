@@ -5,9 +5,6 @@ FROM node:9.11.2-alpine
 
 LABEL maintainer="ry00001 <ry00001@protonmail.com>"
 
-RUN addgroup -g 1000 node && \
-    adduser -u 1000 -G node -s /bin/sh -D node;
-
 RUN apk update && \
     apk upgrade && \
     mkdir -p /usr/src/nxtbot && \
