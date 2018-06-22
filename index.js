@@ -19,6 +19,9 @@ if (process.env.CI) {
             prefixes: ['FAKE'],
             owners: ['12345'],
             options: {}
+        },
+        dbots: {
+            priority: ['1', '2']
         }
     }
 } else if (process.env.DOCKER) {
@@ -32,6 +35,9 @@ if (process.env.CI) {
             owners: process.env.OWNERS.split(' '),
             options: {},
             redis_url: process.env.REDIS
+        },
+        dbots: {
+            priority: process.env.DBOTS_PRIO.split(',')
         }
     }
 } else {
