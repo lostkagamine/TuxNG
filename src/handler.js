@@ -56,7 +56,7 @@ class Nxtbot extends Eris.Client {
                     this.cmdDispatch('commandNotOwner', [ctx])
                     return;
                 }
-                if (ctx.isDM && !cmd.canBeDM) {
+                if (ctx.isDM && !cmd.dmable) {
                     this.cmdDispatch('commandNoDM', [ctx])
                     return
                 }
@@ -83,7 +83,7 @@ class Nxtbot extends Eris.Client {
     }
 
     loadCommand(cmdObj) {
-        let cmd = new Command(cmdObj.name, cmdObj.code, cmdObj.description, cmdObj.perms, cmdObj.botPerms, cmdObj.ownerOnly, cmdObj.dmable, cmdObj.aliases)
+        let cmd = new Command(cmdObj)
         if (!this.commands.includes(cmd)) this.commands.push(cmd);
     }
 
@@ -214,15 +214,30 @@ class Nxtbot extends Eris.Client {
 }
 
 class Command {
-    constructor(name, code, desc, perms = [], botPerms = [], owner = false, dmable = false, aliases = []) {
-        this.name = name
+    constructor(cmdObj) {
+        /* this.name = name
         this.code = code
         this.description = desc
         this.perms = perms
         this.botPerms = botPerms
         this.ownerOnly = owner
         this.aliases = aliases
-        this.canBeDM = dmable
+        this.hidden = hidden
+        this.dmable = dmable */
+        let defaults = {
+            name: 'placeholder',
+            code: () => {},
+            description: 'placeholder',
+            perms: [],
+            botPerms: [],
+            ownerOnly: false,
+            aliases: [],
+            hidden: false,
+            dmable: true
+        }
+        for (let i of Object.keys(defaults)) {
+            this[i] = cmdObj[i] || defaults[i]
+        }
     }
 
     able(member) {
