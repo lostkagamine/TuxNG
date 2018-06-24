@@ -62,25 +62,27 @@ const dumpPriority = () => {
 }
 
 const run = () => {
-    let a = fs.statSync('./data')
-    if (!a.isDirectory()) {
-        console.log('data directory not detected, creating...')
-        fs.mkdirSync('./data/')
-    }
-    if (!fs.existsSync('./data/priority.dat')) {
-        console.log('Priority list file not found, creating and dumping priority list...')
-        let a = process.env.DBOTS_PRIO || bot.config.dbots.priority
-        if (typeof a === 'string') {
-            a = a.split(',')
-        }
-        bot.priority = a
-        dumpPriority();
-    } else {
-        console.log('Loading priority from .dat file.')
-        let file = fs.readFileSync('./data/priority.dat').toString('utf8').split('\n')
-        bot.priority = file
-    }
     let ci = process.env.CI
+    if (!ci) {
+        let a = fs.statSync('./data')
+        if (!a.isDirectory()) {
+            console.log('data directory not detected, creating...')
+            fs.mkdirSync('./data/')
+        }
+        if (!fs.existsSync('./data/priority.dat')) {
+            console.log('Priority list file not found, creating and dumping priority list...')
+            let a = process.env.DBOTS_PRIO || bot.config.dbots.priority
+            if (typeof a === 'string') {
+                a = a.split(',')
+            }
+            bot.priority = a
+            dumpPriority();
+        } else {
+            console.log('Loading priority from .dat file.')
+            let file = fs.readFileSync('./data/priority.dat').toString('utf8').split('\n')
+            bot.priority = file
+        }
+    }
     if (ci) {
         console.log('Continuous Integration detected, loading all modules then exiting...');
         bot.loadDir(bot.options.commandsDir);
