@@ -2,6 +2,7 @@ node_modules/
 config.json
 .vscode/
 .git/
+data/README.txt
 codeclimate.yml
 .eslintrc.json
 Dockerfile

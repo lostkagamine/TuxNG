@@ -3,7 +3,8 @@ module.exports = {
     description: 'Ping an online helper in the Discord Bots server.',
     hidden: true,
     code: async (ctx, args) => {
-        let priority = ctx.bot.config.dbots.priority
+        let priority = ctx.bot.priority
+        if (!priority) return await ctx.send('Error occurred while fetching priority list.')
         if (ctx.guild.id !== '110373943822540800') return;
         priority = priority.map(a => ctx.guild.members.get(a))
         let toping = []

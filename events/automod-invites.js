@@ -16,6 +16,7 @@ module.exports = {
                 // DM (but why are they trying to shill in the bot's DMs in the first place...?)
                 return;
             }
+            if (!settings) return; // fix unhandled promise rejection?
             if (invitere.test(content) && settings.automod_invites) {
                 // oheck invite
                 let match = invitere.exec(content)

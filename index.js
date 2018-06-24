@@ -8,6 +8,7 @@
 const Eris = require('eris')
 const handler = require('./src/handler.js')
 const crypto = require('crypto');
+const fs = require('fs')
 const superagent = require('superagent')
 var config = {};
 if (process.env.CI) { 
@@ -49,7 +50,36 @@ const bot = new handler.Nxtbot(config.discord.token, process.env.CI, config.bot.
 
 console.log('nxtbot starting...')
 
+const dumpPriority = () => {
+    fs.open('./data/priority.dat', 'w', (err, fd) => {
+        if (!process.env.DBOTS_PRIO && !bot.config.dbots.priority) {
+            console.log('[ERROR] DBOTS_PRIO environment variable not found and configuration key missing, ignoring...')
+            return
+        }
+        let a = process.env.DBOTS_PRIO || bot.config.dbots.priority.join(',')
+        fs.writeSync(fd, a.split(',').join('\n'))
+    })
+}
+
 const run = () => {
+    let a = fs.statSync('./data')
+    if (!a.isDirectory()) {
+        console.log('data directory not detected, creating...')
+        fs.mkdirSync('./data/')
+    }
+    if (!fs.existsSync('./data/priority.dat')) {
+        console.log('Priority list file not found, creating and dumping priority list...')
+        let a = process.env.DBOTS_PRIO || bot.config.dbots.priority
+        if (typeof a === 'string') {
+            a = a.split(',')
+        }
+        bot.priority = a
+        dumpPriority();
+    } else {
+        console.log('Loading priority from .dat file.')
+        let file = fs.readFileSync('./data/priority.dat').toString('utf8').split('\n')
+        bot.priority = file
+    }
     let ci = process.env.CI
     if (ci) {
         console.log('Continuous Integration detected, loading all modules then exiting...');
