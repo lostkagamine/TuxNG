@@ -22,7 +22,8 @@ if (process.env.CI) {
             options: {}
         },
         dbots: {
-            priority: ['1', '2']
+            priority: ['1', '2'],
+            token: 'abcdef'
         }
     }
 } else if (process.env.DOCKER) {
@@ -38,7 +39,8 @@ if (process.env.CI) {
             redis_url: process.env.REDIS
         },
         dbots: {
-            priority: process.env.DBOTS_PRIO.split(',')
+            priority: process.env.DBOTS_PRIO.split(','),
+            token: process.env.DBOTS_TOKEN
         }
     }
 } else {
@@ -49,6 +51,25 @@ const util = require('util')
 const bot = new handler.Nxtbot(config.discord.token, process.env.CI, config.bot.prefixes, config.bot.options, config.bot.owners, config)
 
 console.log('nxtbot starting...')
+
+const postStats = () => {
+    if (!bot.config.dbots.token) {
+        console.log('No token found in configuration, skipping post.')
+        return
+    }
+    superagent.post(`https://bots.discord.pw/api/bots/${bot.user.id}/stats`)
+        .type('application/json')
+        .set('Authorization', bot.config.dbots.token)
+        .send({
+            server_count: bot.guilds.size
+        })
+        .then(a => {
+            console.log('Posted stats to bots.discord.pw successfully.')
+        })
+        .catch(a => {
+            console.log(`ERROR while posting stats to bots.discord.pw: (${a.status}) ${a.response.body.error}\nThis can usually be safely ignored if you don't have a token or your bot isn't listed.`)
+        })
+}
 
 const dumpPriority = () => {
     fs.open('./data/priority.dat', 'w', (err, fd) => {
@@ -129,6 +150,7 @@ var delGuildInfo = g => {
 }
 
 bot.on('guildCreate', g => {
+    postStats()
     makeGuildInfo(g)
     if (bot.config.bot.logging) {
         bot.createMessage(bot.config.bot.guild_channel, {
@@ -157,6 +179,7 @@ bot.on('guildCreate', g => {
 })
 
 bot.on('guildDelete', g => {
+    postStats()
     delGuildInfo(g) // clean up after ourselves
     if (bot.config.bot.logging) {
         bot.createMessage(bot.config.bot.guild_channel, {
@@ -201,6 +224,7 @@ bot.on('ready', () => {
         makeGuildInfo(guild[1]) // [1] is required because lol collections.
     }
 
+    postStats();
     cycleGame();
     setInterval(() => cycleGame(), 120000)
 })

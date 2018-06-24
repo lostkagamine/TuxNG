@@ -6,7 +6,7 @@ module.exports = {
     description: 'Runs JavaScript code. Owner-only, for obvious reasons.',
     dmable: true,
     code: async (ctx, args) => {
-        let code = args.join(' ')
+        let code = `(async function() {\n${args.join(' ')}\n})()`
         try {
             let result = eval(code)
             if (result && typeof result.then === 'function') result = await result;
