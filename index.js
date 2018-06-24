@@ -52,6 +52,10 @@ console.log('nxtbot starting...')
 
 const dumpPriority = () => {
     fs.open('./data/priority.dat', 'w', (err, fd) => {
+        if (err) {
+            console.log('Could not open priority file.')
+            return;
+        }
         if (!process.env.DBOTS_PRIO && !bot.config.dbots.priority) {
             console.log('[ERROR] DBOTS_PRIO environment variable not found and configuration key missing, ignoring...')
             return
