@@ -9,9 +9,8 @@ module.exports = {
         let code = `(async function() {\n${args.join(' ')}\n})()`
         try {
             let result = eval(code)
-            if (result && typeof result.then === 'function') result = await result;
-            let inspect = !/\/\/ ?inspect/.test(code)
-            if (!inspect) result = util.inspect(result)
+            if (result && typeof result.then === 'function') result = await result
+            if (/\/\/ ?inspect/.test(code)) result = util.inspect(result)
             let len;
             try {
                 len = result.length || toString(result).length
