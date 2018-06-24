@@ -10,12 +10,14 @@ module.exports = {
         try {
             let result = eval(code)
             if (result && typeof result.then === 'function') result = await result
-            if (/\/\/ ?inspect/.test(code)) result = util.inspect(result)
-            let len;
+            if (typeof result !== 'string' && !(/\/\/ ?no(?:-| )?auto(?:-| )?inspect/.test(code))) {
+                result = util.inspect(result)
+            }
+            let len
             try {
                 len = result.length || toString(result).length
             } catch(e) {
-                return await ctx.send(`\`\`\`No output.\`\`\``)
+                await ctx.send('```No output.```')
             }
             if (len > 2000) {
                 superagent.post('https://hastebin.com/documents')
