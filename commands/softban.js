@@ -1,7 +1,7 @@
 module.exports = {
-    // i know i've basically copy-pasted kick dont kill me
-    name: 'ban',
-    description: 'Bans someone.',
+    // i know i've basically copy-pasted ban
+    name: 'softban',
+    description: 'Bans someone, then quickly unbans them.',
     perms: ['banMembers'],
     botPerms: ['banMembers'],
     dmable: false,
@@ -14,25 +14,21 @@ module.exports = {
         let reason = args.join(' ')
         let u;
         if (user === undefined) {
-            u = `\`${id}\``
-            // return await ctx.send(':x: | Invalid user.')
+            return await ctx.send('Invalid user.')
         } else {
             u = `${user.username}#${user.discriminator}`
         }
         if (reason === '') {
-            reason = `[ Ban by ${ctx.author.username}#${ctx.author.discriminator} ]`
+            reason = `[ Softban by ${ctx.author.username}#${ctx.author.discriminator} ]`
         } else {
             reason = `${ctx.author.username}#${ctx.author.discriminator}: ${reason}`
         }
         try {
-            if (user !== undefined) {
-                await user.ban(7, reason);
-            } else {
-                await ctx.guild.banMember(id, 7, reason)
-            }
-            await ctx.send(`:hammer: Banned ${u}.`)
+            await user.ban(7, reason);
+            await user.unban(reason)
+            await ctx.send(`:banana: Softbanned ${u}.`)
         } catch(e) {
-            await ctx.send(':x: | Unable to ban user. Check your role order.')
+            await ctx.send(':x: | Unable to softban user. Check your role order.')
         }
     }
 }

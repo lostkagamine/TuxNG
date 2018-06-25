@@ -11,7 +11,7 @@ module.exports = {
             return await ctx.send(':x: | Invalid user.')
         }
         if (reason === '') {
-            reason = `[${ctx.author.username}#${ctx.author.discriminator}]`
+            reason = `[ Kick by ${ctx.author.username}#${ctx.author.discriminator} ]`
         } else {
             reason = `${ctx.author.username}#${ctx.author.discriminator}: ${reason}`
         }
