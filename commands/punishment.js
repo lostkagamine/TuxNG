@@ -13,7 +13,7 @@ module.exports = {
         }
         let count = args[0]
         let action = args[1]
-        let validActions = ['kick', 'ban']
+        let validActions = ['kick', 'ban', 'softban']
         let existing = await ctx.bot.db[ctx.guild.id].punishments.get;
         let counts = existing.map(a => a.count)
         if (!(count || action)) {

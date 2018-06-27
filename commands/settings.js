@@ -3,16 +3,19 @@ module.exports = {
     description: 'Manages nxtbot\'s settings.',
     perms: ['manageGuild'],
     code: async (ctx, args) => {
+        function parseBool(v) {
+            return ['y', 'yes', 'true', 'on'].includes(v)
+        }
         let validSettings = {
             automod_invites: {name: 'Invite Automod',
-                test: v => { !!v; return true; },
-                value: v => !!v},
+                test: v => { parseBool(v); return true; },
+                value: v => parseBool(v)},
             invite_strikes: {name: 'Invite Strikes',
                 test: v => { return !isNaN(parseInt(v)) },
                 value: v => parseInt(v)},
             fake_invites: {name: 'Block Fake Invites via Automod - Turn this on for discord.me/io detection to work.',
-                test: v => { !!v; return true; },
-                value: v => !!v}
+                test: v => { parseBool(v); return true; },
+                value: v => parseBool(v)}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
             console.log('creating...')
@@ -49,5 +52,6 @@ module.exports = {
             await ctx.bot.db[ctx.guild.id].settings[key].set(res);
             await ctx.send('Successfully set.')
         }
-    }
+    },
+    aliases: ['setting', 'set']
 }
