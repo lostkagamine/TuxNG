@@ -1,7 +1,7 @@
 module.exports = {
     events: ['messageCreate'],
     code: m => {
-        let invitere = /(?:https?:\/\/)?discord(?:app)?\.(?:com|gg|me|io)\/(?: +)?(?:invite\/)?([a-zA-Z0-9_-]+)/
+        let invitere = /(?:https?:\/\/)?discord(?:app)?\.(?:com|gg|me|io)\/(?: +)?(?:invite\/)?([a-zA-Z0-9_-]+)/g
         let content = m.content
         let bot = m._client
         if (!m.member) return;
