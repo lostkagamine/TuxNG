@@ -10,7 +10,7 @@ module.exports = {
             invite_strikes: {name: 'Invite Strikes',
                 test: v => { return !isNaN(parseInt(v)) },
                 value: v => parseInt(v)},
-            fake_invites: {name: 'Block Fake Invites via Automod',
+            fake_invites: {name: 'Block Fake Invites via Automod - Turn this on for discord.me/io detection to work.',
                 test: v => { !!v; return true; },
                 value: v => !!v}
         }
