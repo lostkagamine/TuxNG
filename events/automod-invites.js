@@ -6,6 +6,7 @@ module.exports = {
         let bot = m._client
         if (!m.member) return;
         if (m.author.bot) return;
+        if (!m.member.guild) return; // oops
         let guild = m.member.guild;
         let punish = settings => {
             let me = guild.members.get(bot.user.id)

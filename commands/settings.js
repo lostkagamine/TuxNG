@@ -6,6 +6,10 @@ module.exports = {
         function parseBool(v) {
             return ['y', 'yes', 'true', 'on'].includes(v)
         }
+        function parseRole(v) {
+            // it expects a list of role names i guess meme
+            return ctx.guild.roles.filter(a => a.name === v)
+        }
         let validSettings = {
             automod_invites: {name: 'Invite Automod',
                 test: v => { parseBool(v); return true; },
@@ -33,7 +37,7 @@ module.exports = {
                 return await ctx.send('Invalid value to query.')
             }
             let value = await ctx.bot.db[ctx.guild.id].settings[args[0]].get
-            await ctx.send(`${validSettings[args[0]].name} (${args[0]}): ${value || 'Not set.'}`)
+            await ctx.send(`${validSettings[args[0]].name} (${args[0]}): ${value || 'Off/Not set.'}`)
         } else {
             let key = args.shift()
             let value = args.join(' ')

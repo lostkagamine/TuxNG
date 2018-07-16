@@ -31,8 +31,6 @@ class Nxtbot extends Eris.Client {
                 if (this.prefixes === [] && this.cmdOptions.noMentionPrefix) {
                     console.warn('Warning! The bot has no prefixes registered, and you have chosen to disable mention prefixes! Please add some prefixes or enable mention prefixes, as the bot will be un-triggerable until you do!')
                 }
-
-                if (!this.cmdOptions.dontLoadOnStartup) this.loadDir(this.cmdOptions.commandsDir); this.loadEvents(this.cmdOptions.eventsDir)
             })
 
             this.on('messageCreate', m => {

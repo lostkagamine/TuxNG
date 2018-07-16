@@ -114,6 +114,9 @@ const run = () => {
         process.exit(0);
     } else {
         bot.db = new Redite({url: config.bot.redis_url});
+        bot.loadDir(bot.cmdOptions.commandsDir);
+        bot.loadEvents(bot.cmdOptions.eventsDir);
+        // hopefully fix the bork ^
         bot.connect();
     }
 }
