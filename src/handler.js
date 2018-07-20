@@ -1,5 +1,5 @@
 /*
- * nxtbot Command handler
+ * TuxNG Command handler
  * @author ry00001
  */
 
@@ -7,7 +7,7 @@ const Eris = require('eris');
 const fs = require('fs');
 const path = require('path')
 
-class Nxtbot extends Eris.Client {
+class TuxNG extends Eris.Client {
     constructor(token, isCI = false, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
         super(token);
         this.commands = [];
@@ -281,4 +281,4 @@ class Context {
     }
 }
 
-module.exports = {Nxtbot, Command, Context}
+module.exports = {TuxNG, Command, Context} // Tuxedo

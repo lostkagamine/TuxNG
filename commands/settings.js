@@ -1,6 +1,6 @@
 module.exports = {
     name: 'settings',
-    description: 'Manages nxtbot\'s settings.',
+    description: 'Manages Tuxedo\'s settings.',
     perms: ['manageGuild'],
     code: async (ctx, args) => {
         function parseBool(v) {
@@ -26,7 +26,7 @@ module.exports = {
             await ctx.bot.db[ctx.guild.id].set({settings: {}, punishments: []})
         }
         if (!args[0]) {
-            let s = '**nxtbot Settings Panel**\n\n'
+            let s = '**Tuxedo Settings Panel**\n\n'
             for (let a in validSettings) {
                 let thing = await ctx.bot.db[ctx.guild.id].settings[a].get
                 s += `${validSettings[a].name} (${a}): ${thing || 'Not set.'}\n\n`

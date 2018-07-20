@@ -1,5 +1,5 @@
 {
-  "name": "nxtbot",
+  "name": "Tuxedo",
   "version": "1.0.0",
   "description": "A discord bot in JS",
   "main": "index.js",
@@ -9,12 +9,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ry00001/nxtbot.git"
+    "url": "git+https://github.com/ry00001/Tuxedo.git"
   },
-  "author": "ry00001 and nxtbot Devteam",
+  "author": "ry00001 and Tuxedo Devteam",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ry00001/nxtbot/issues"
+    "url": "https://github.com/ry00001/Tuxedo/issues"
   },
   "dependencies": {
     "eris": ">=0.8.5",
@@ -24,5 +24,5 @@
   "devDependencies": {
     "eslint": ">=4.19.1"
   },
-  "homepage": "https://github.com/ry00001/nxtbot#readme"
+  "homepage": "https://github.com/ry00001/Tuxedo#readme"
 }

@@ -1,5 +1,5 @@
 /*
- * nxtbot
+ * TuxNG
  * by your average cat, ry00001
  * version "I have no idea what I'm doing"
  * builds: passing (probably at least)
@@ -24,6 +24,9 @@ if (process.env.CI) {
         dbots: {
             priority: ['1', '2'],
             token: 'abcdef'
+        },
+        dbl: {
+            token: 'ghijkl'
         }
     }
 } else if (process.env.DOCKER) {
@@ -48,9 +51,9 @@ if (process.env.CI) {
 }
 const Redite = require('redite')
 const util = require('util')
-const bot = new handler.Nxtbot(config.discord.token, process.env.CI, config.bot.prefixes, config.bot.options, config.bot.owners, config)
+const bot = new handler.TuxNG(config.discord.token, process.env.CI, config.bot.prefixes, config.bot.options, config.bot.owners, config)
 
-console.log('nxtbot starting...')
+console.log('TuxNG starting...')
 
 const postStats = () => {
     if (!bot.config.dbots.token) {
@@ -130,7 +133,7 @@ var cycleGame = () => {
         {name: 'the messages flow', type: 3},
         {name: 'the help command', type: 2},
         {name: 'with JavaScript', type: 0},
-        {name: 'https://github.com/ry00001/nxtbot', type: 0}
+        {name: 'https://github.com/ClarityMoe/TuxNG', type: 0}
     ]
     currGame++;
     if (currGame >= games.length) currGame = 0;
@@ -160,7 +163,7 @@ bot.on('guildCreate', g => {
             embed: {
                 title: `New guild: ${g.name} (${g.id})`,
                 color: 0x00FF00,
-                description: 'A new user has added nxtbot to their guild.',
+                description: 'A new user has added Tuxedo to their guild.',
                 thumbnail: {
                     url: g.iconURL
                 },
@@ -189,7 +192,7 @@ bot.on('guildDelete', g => {
             embed: {
                 title: `Lost guild: ${g.name} (${g.id})`,
                 color: 0xFF0000,
-                description: 'Somebody has removed nxtbot from their guild.',
+                description: 'Somebody has removed Tuxedo from their guild.',
                 thumbnail: {
                     url: g.iconURL
                 },
@@ -213,7 +216,7 @@ bot.on('guildDelete', g => {
 bot.on('ready', () => {
     console.log(`Ready, connected as ${bot.user.username}#${bot.user.discriminator} (${bot.user.id})`)
     if (!bot.bot) {
-        console.log('nxtbot can only be ran under bot accounts. Exiting...')
+        console.log('TuxNG can only be ran under bot accounts. Exiting...')
         process.exit(1);
     }
 
@@ -247,7 +250,7 @@ bot.cmdEvent('commandError', async (ctx, err) => {
         embed: {
             title: 'Command error',
             description: `Well, this is embarrassing. 
-It appears an error has happened in nxtbot's source code.
+It appears an error has happened in Tuxedo's source code.
 This isn't your fault, but you may want to report this at [${ctx.bot.config.bot.support_text}](${ctx.bot.config.bot.support}). Be sure to quote the error code!`,
             fields: [{
                 name: 'Error details',

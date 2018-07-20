@@ -1,4 +1,4 @@
-# Contributing to nxtbot
+# Contributing to Tuxedo
 
 ## Guidelines
 Your addition/fix/whatever MUST pass all tests (`npm test`).  
