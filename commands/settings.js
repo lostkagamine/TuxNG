@@ -10,7 +10,16 @@ module.exports = {
             // it expects a list of role names i guess meme
             return ctx.guild.roles.filter(a => a.name === v)
         }
-        let validSettings = {
+        function parseChannel(s) {
+            let match = /<#(\d+)>/.exec(s)
+            if (match) {
+                return ctx.guild.channels.filter(a => a.id === match[1])[0]
+            } else {
+                return ctx.guild.channels.filter(a => a.id === s)[0]
+            }
+        }
+        let templateValue = (template, value) => value ? (template || "%VALUE%").replace(/%VALUE%/g, value) : 'Off/Not set.'
+        var validSettings = {
             automod_invites: {name: 'Invite Automod',
                 test: v => { parseBool(v); return true; },
                 value: v => parseBool(v)},
@@ -19,7 +28,11 @@ module.exports = {
                 value: v => parseInt(v)},
             fake_invites: {name: 'Block Fake Invites via Automod - Turn this on for discord.me/io detection to work.',
                 test: v => { parseBool(v); return true; },
-                value: v => parseBool(v)}
+                value: v => parseBool(v)},
+            modlog_channel: {name: 'Modlog Channel',
+                test: v => !!parseChannel(v),
+                value: v => parseChannel(v).id,
+                valueTemplate: "<#%VALUE%>"}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
             console.log('creating...')
@@ -29,7 +42,8 @@ module.exports = {
             let s = '**Tuxedo Settings Panel**\n\n'
             for (let a in validSettings) {
                 let thing = await ctx.bot.db[ctx.guild.id].settings[a].get
-                s += `${validSettings[a].name} (${a}): ${thing || 'Not set.'}\n\n`
+                if (validSettings[a].valueTemplate) thing = templateValue(validSettings[a].valueTemplate, thing)
+                s += `${validSettings[a].name} (${a}): ${thing || 'Off/Not set.'}\n\n`
             }
             await ctx.send(s)
         } else if (args[0] && !args[1]) {
@@ -37,6 +51,7 @@ module.exports = {
                 return await ctx.send('Invalid value to query.')
             }
             let value = await ctx.bot.db[ctx.guild.id].settings[args[0]].get
+            if (validSettings[args[0]].valueTemplate) value = templateValue(validSettings[args[0]].valueTemplate, value)
             await ctx.send(`${validSettings[args[0]].name} (${args[0]}): ${value || 'Off/Not set.'}`)
         } else {
             let key = args.shift()
@@ -53,7 +68,8 @@ module.exports = {
                 return await ctx.send('Your input doesn\'t pass tests. Are you sure it\'s the right value?')
             }
             let res = validSettings[key].value(value)
-            await ctx.bot.db[ctx.guild.id].settings[key].set(res);
+            console.log(res)
+            await ctx.bot.db[ctx.guild.id].settings[key].set(res.toString());
             await ctx.send('Successfully set.')
         }
     },

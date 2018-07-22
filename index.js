@@ -142,10 +142,25 @@ var cycleGame = () => {
 
 
 var makeGuildInfo = g => {
+    let defaults = {
+        settings: {},
+        punishments: [],
+        modlog: []
+    }
+    exists = bot.db[g.id].exists
+    if (!exists) {
+        bot.db[g.id].set(defaults) // hacky async closure hacks were here
+        return;
+    }
     bot.db[g.id].get.then(a => {
-        if (!a || !a.settings || !a.punishments) {
-            console.log('Creating information for guild ' + g.name)
-            bot.db[g.id].set({settings: {}, punishments: []})
+        if (!a) { 
+            bot.db[g.id].set(defaults)
+            return;
+        } // what
+        for (let i of Object.keys(defaults)) {
+            if (!a[i] /* a[i] caramba */) {
+                bot.db[g.id][i].set(defaults[i])
+            }
         }
     })
 }

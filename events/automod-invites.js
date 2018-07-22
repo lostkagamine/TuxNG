@@ -1,12 +1,13 @@
 module.exports = {
     events: ['messageCreate'],
-    code: m => {
+    code: (bot, m) => {
+        if (!m) return;
         let invitere = /(?:https?:\/\/)?discord(?:app)?\.(?:com|gg|me|io)\/(?: +)?(?:invite\/)?([a-zA-Z0-9_-]+)/
         let content = m.content
-        let bot = m._client
         if (!m.member) return;
         if (m.author.bot) return;
-        if (!m.member.guild) return; // oops
+        if (!m.member.guild) return;
+        if (!m.user) return; // oops
         let guild = m.member.guild;
         let punish = settings => {
             let me = guild.members.get(bot.user.id)

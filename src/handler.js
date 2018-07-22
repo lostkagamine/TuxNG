@@ -9,7 +9,7 @@ const path = require('path')
 
 class TuxNG extends Eris.Client {
     constructor(token, isCI = false, prefixes = [], cmdOptions = {}, owners = [], config = {}) {
-        super(token);
+        super(`Bot ${token}`, {restMode: true});
         this.commands = [];
         this.isCI = isCI;
         if (!isCI) { 
@@ -63,7 +63,7 @@ class TuxNG extends Eris.Client {
                         this.cmdDispatch('commandBotNoPermissions', [ctx])
                         return;
                     }
-                    if (!cmd.able(ctx.member)) {
+                    if (!cmd.able(this, ctx.member)) {
                         this.cmdDispatch('commandNoPermissions', [ctx])
                         return;
                     }
@@ -90,7 +90,7 @@ class TuxNG extends Eris.Client {
             if (evtObj.isHandler) {
                 this.cmdEvent(j, evtObj.code)
             } else {
-                this.on(j, evtObj.code)
+                this.on(j, (...args) => { args.unshift(this); evtObj.code(...args) })
             }
         }
     }
@@ -238,7 +238,11 @@ class Command {
         }
     }
 
-    able(member) {
+    able(bot, member) {
+        if (bot.owners.includes(member.id)) {
+            return true;
+        }
+
         if (member.guild.ownerID === member.id) {
             return true; // since permission.has doesn't take in account guild ownership...
         }
