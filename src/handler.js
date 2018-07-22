@@ -1,4 +1,4 @@
-/*
+/**
  * TuxNG Command handler
  * @author ry00001
  */

@@ -147,7 +147,7 @@ var makeGuildInfo = g => {
         punishments: [],
         modlog: []
     }
-    exists = bot.db[g.id].exists
+    let exists = bot.db[g.id].exists
     if (!exists) {
         bot.db[g.id].set(defaults) // hacky async closure hacks were here
         return;

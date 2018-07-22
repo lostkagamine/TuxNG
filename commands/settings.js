@@ -18,7 +18,7 @@ module.exports = {
                 return ctx.guild.channels.filter(a => a.id === s)[0]
             }
         }
-        let templateValue = (template, value) => value ? (template || "%VALUE%").replace(/%VALUE%/g, value) : 'Off/Not set.'
+        let templateValue = (template, value) => value ? (template || '%VALUE%').replace(/%VALUE%/g, value) : 'Off/Not set.'
         var validSettings = {
             automod_invites: {name: 'Invite Automod',
                 test: v => { parseBool(v); return true; },
@@ -32,7 +32,7 @@ module.exports = {
             modlog_channel: {name: 'Modlog Channel',
                 test: v => !!parseChannel(v),
                 value: v => parseChannel(v).id,
-                valueTemplate: "<#%VALUE%>"}
+                valueTemplate: '<#%VALUE%>'}
         }
         if (!await ctx.bot.db[ctx.guild.id].exists()) {
             console.log('creating...')

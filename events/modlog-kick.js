@@ -22,7 +22,7 @@ module.exports = {
         if (!channel) return; // channel delet?
         let newestCase = modlogs.length + 1
         let entry = new modlog.ModLogEntry(newestCase, log.entries[0], log)
-        let msg = await channel.createMessage({ embed: entry.toEmbed() })
+        let msg = await channel.createMessage({embed: entry.toEmbed()})
         modlogs.push({
             entry: entry.toObject(),
             msgId: msg.id,
