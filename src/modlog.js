@@ -20,7 +20,7 @@ var emotes = {
 
 var colours = {
     20: 0xFFFF00,
-    22: 0x00FF00,
+    22: 0xFF0000,
     23: 0x00FFFF
 }
 
@@ -56,7 +56,7 @@ class ModLogEntry {
         }
         // ^ when we run into caching issues I'll switch to REST ^
         return {
-            title: emotes[this.actionType] + ' ' + actionNames[this.actionType],
+            title: emotes[this.actionType] + '    ' + actionNames[this.actionType],
             color: colours[this.actionType],
             fields: [
                 {
