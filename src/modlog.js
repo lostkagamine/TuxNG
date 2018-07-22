@@ -20,7 +20,7 @@ var emotes = {
 
 var colours = {
     20: 0xFFFF00,
-    22: 0xFF0000,
+    22: 0xFF0000, // why was it green
     23: 0x00FFFF
 }
 
